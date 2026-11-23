@@ -1,0 +1,6 @@
+r
+h
+loadfile build/Debug/NW.hex
+r
+g
+qc

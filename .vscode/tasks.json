@@ -1,0 +1,57 @@
+{
+    "version": "2.0.0",
+    "options": {
+        "cwd": "${workspaceFolder}",
+        "env": {
+            "PATH": "E:\\STM32\\toolchain\\14.3-rel1\\bin;C:\\Program Files\\CMake\\bin;C:\\Users\\Asus\\AppData\\Local\\Microsoft\\WinGet\\Packages\\Ninja-build.Ninja_Microsoft.Winget.Source_8wekyb3d8bbwe;E:\\STM32\\JLink\\V794k;${env:PATH}"
+        }
+    },
+    "tasks": [
+        {
+            "label": "配置 (cmake configure)",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--preset", "Debug"],
+            "problemMatcher": []
+        },
+        {
+            "label": "编译 (build)",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "--preset", "Debug"],
+            "problemMatcher": ["$gcc"],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "重新编译 (rebuild)",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "--preset", "Debug", "--clean-first"],
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "清理 (clean)",
+            "type": "shell",
+            "command": "cmake",
+            "args": ["--build", "--preset", "Debug", "--target", "clean"],
+            "problemMatcher": []
+        },
+        {
+            "label": "烧录 (J-Link)",
+            "type": "shell",
+            "command": "JLink.exe",
+            "args": [
+                "-device", "STM32F103C8",
+                "-if", "SWD",
+                "-speed", "4000",
+                "-autoconnect", "1",
+                "-CommanderScript", "${workspaceFolder}/tools/flash.jlink"
+            ],
+            "dependsOn": "编译 (build)",
+            "problemMatcher": []
+        }
+    ]
+}
