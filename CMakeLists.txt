@@ -12,6 +12,10 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 set(CMAKE_C_EXTENSIONS ON)
 
+# C++17 support for BSP/module/app C++ sources
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 # Define the build type
 if(NOT CMAKE_BUILD_TYPE)
@@ -24,12 +28,10 @@ set(CMAKE_PROJECT_NAME NW)
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
-# Core project settings
-project(${CMAKE_PROJECT_NAME})
+# Core project settings: enable C, C++ and ASM in one place
+project(${CMAKE_PROJECT_NAME} LANGUAGES C CXX ASM)
 message("Build type: " ${CMAKE_BUILD_TYPE})
-
-# Enable CMake support for ASM and C languages
-enable_language(C ASM)
+message("C++ standard: " ${CMAKE_CXX_STANDARD})
 
 # Create an executable object type
 add_executable(${CMAKE_PROJECT_NAME})
@@ -45,11 +47,21 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    bsp/gpio/bsp_gpio.c
+    bsp/can/bsp_can_tx.c
+    bsp/i2c/bsp_i2c_tx.c
+    bsp/uart/bsp_uart_tx.c
+    bsp/pwm/bsp_sg90.c
+    module/bsp/adapters.cpp
+    module/servo/sg90_angle.cpp
+    module/servo/sg90_servo.cpp
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    bsp
+    module
 )
 
 # Add project symbols (macros)
@@ -59,6 +71,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Remove wrong libob.a library dependency when using cpp files
 list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
+list(REMOVE_ITEM CMAKE_CXX_IMPLICIT_LINK_LIBRARIES ob)
 
 # Add linked libraries
 target_link_libraries(${CMAKE_PROJECT_NAME}
