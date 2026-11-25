@@ -55,6 +55,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     module/bsp/adapters.cpp
     module/servo/sg90_angle.cpp
     module/servo/sg90_servo.cpp
+    APP/servo/servo_app.cpp
 )
 
 # Add include paths
@@ -62,6 +63,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
     bsp
     module
+    APP
 )
 
 # Add project symbols (macros)
